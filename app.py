@@ -2,10 +2,11 @@ import streamlit as st
 import smtplib
 from email.mime.text import MIMEText
 import csv
+from datetime import datetime
 
 # Email configuration
-EMAIL_ADDRESS = 'meermiro299@gmail.com'  
-EMAIL_PASSWORD = 'tlkt ejed oftf imze'  
+EMAIL_ADDRESS = 'meermiro299@gmail.com'
+EMAIL_PASSWORD = 'tlkt ejed oftf imze'  # Replace with your email password
 
 # Define acceptance criteria
 ACCEPTANCE_CRITERIA = {
@@ -15,7 +16,7 @@ ACCEPTANCE_CRITERIA = {
 }
 
 # Course name
-COURSE_NAME = "Course" 
+COURSE_NAME = "Course"
 
 # Function to send email
 def send_email(to_email, applicant_name, accepted):
@@ -31,7 +32,7 @@ def send_email(to_email, applicant_name, accepted):
     msg['To'] = to_email
 
     # Send email
-    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:  
         smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
         smtp.send_message(msg)
 
@@ -44,7 +45,12 @@ if 'form_submitted' not in st.session_state:
 
 with st.form(key='application_form'):
     name = st.text_input("Name", value="" if not st.session_state.form_submitted else "")
-    dob = st.date_input("Date of Birth", value=None if not st.session_state.form_submitted else None)
+    
+    # Adjust date of birth input to allow only 1970-2015
+    min_date = datetime(1970, 1, 1)
+    max_date = datetime(2015, 12, 31)
+    dob = st.date_input("Date of Birth", value=None if not st.session_state.form_submitted else None, min_value=min_date, max_value=max_date)
+    
     mobile = st.text_input("Mobile Number", value="" if not st.session_state.form_submitted else "")
     email = st.text_input("Email", value="" if not st.session_state.form_submitted else "")
     english_level = st.selectbox("Level of English Language", [1, 2, 3], index=0 if not st.session_state.form_submitted else None)
@@ -60,10 +66,13 @@ with st.form(key='application_form'):
             writer.writerow([name, dob, mobile, email, english_level, python_level, experience])
 
         # Determine if accepted or declined
-        if (english_level == ACCEPTANCE_CRITERIA["english_level"] and 
-            python_level == ACCEPTANCE_CRITERIA["python_level"] and 
-            experience == ACCEPTANCE_CRITERIA["experience"]):
+        if (english_level == "3" and 
+            python_level == "3" and 
+            experience == "5+ years"):
             send_email(email, name, accepted=True)
+        elif ((english_level in ["1", "2"] and python_level in ["1", "2"]) and 
+              (experience == "less than a year" or experience == "2-4 years")):
+            send_email(email, name, accepted=False)
         else:
             send_email(email, name, accepted=False)
 
