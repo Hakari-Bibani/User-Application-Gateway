@@ -1,16 +1,11 @@
-from flask import Flask, request, render_template, redirect, url_for
-from flask_mail import Mail, Message
+import streamlit as st
+import smtplib
+from email.mime.text import MIMEText
 import csv
 
-app = Flask(__name__)
-
-# Configure Flask-Mail
-app.config['MAIL_SERVER'] = 'smtp.example.com'  # Replace with your mail server
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'your-email@example.com'  # Replace with your email
-app.config['MAIL_PASSWORD'] = 'your-email-password'  # Replace with your email password
-mail = Mail(app)
+# Email configuration
+EMAIL_ADDRESS = 'your-email@example.com'  # Replace with your email
+EMAIL_PASSWORD = 'your-email-password'  # Replace with your email password
 
 # Define acceptance criteria
 ACCEPTANCE_CRITERIA = {
@@ -19,46 +14,50 @@ ACCEPTANCE_CRITERIA = {
     "experience": "5+ years"
 }
 
-@app.route('/')
-def index():
-    return render_template('form.html')
-
-@app.route('/submit', methods=['POST'])
-def submit():
-    name = request.form['name']
-    dob = request.form['dob']
-    mobile = request.form['mobile']
-    email = request.form['email']
-    english_level = request.form['english_level']
-    python_level = request.form['python_level']
-    experience = request.form['experience']
-
-    # Save data to a file
-    with open('applications.csv', 'a') as f:
-        writer = csv.writer(f)
-        writer.writerow([name, dob, mobile, email, english_level, python_level, experience])
-
-    # Determine if the applicant is accepted or declined
-    if english_level == ACCEPTANCE_CRITERIA["english_level"] and \
-       python_level == ACCEPTANCE_CRITERIA["python_level"] and \
-       experience == ACCEPTANCE_CRITERIA["experience"]:
-        send_email(email, name, accepted=True)
-    else:
-        send_email(email, name, accepted=False)
-
-    return redirect(url_for('index'))
-
+# Function to send email
 def send_email(to_email, applicant_name, accepted):
+    subject = "Application Status"
     if accepted:
-        subject = "Application Accepted!"
         body = f"Dear {applicant_name},\n\nWe are delighted to inform you that your application for our course has been accepted!"
     else:
-        subject = "Application Status"
         body = f"Dear {applicant_name},\n\nThank you for your interest in our course. Unfortunately, we cannot offer you a place at this time."
 
-    msg = Message(subject, sender=app.config['MAIL_USERNAME'], recipients=[to_email])
-    msg.body = body
-    mail.send(msg)
+    msg = MIMEText(body)
+    msg['Subject'] = subject
+    msg['From'] = EMAIL_ADDRESS
+    msg['To'] = to_email
 
-if __name__ == '__main__':
-    app.run(debug=True)
+    # Send email
+    with smtplib.SMTP_SSL('smtp.example.com', 465) as smtp:  # Replace with your SMTP server
+        smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+        smtp.send_message(msg)
+
+# Streamlit app
+st.title("Personal Information Form")
+
+with st.form(key='application_form'):
+    name = st.text_input("Name")
+    dob = st.date_input("Date of Birth")
+    mobile = st.text_input("Mobile Number")
+    email = st.text_input("Email")
+    english_level = st.selectbox("Level of English Language", [1, 2, 3])
+    python_level = st.selectbox("Level of Python", [1, 2, 3])
+    experience = st.selectbox("Experience", ["less than a year", "2-4 years", "5+ years"])
+
+    submit_button = st.form_submit_button("Submit")
+
+    if submit_button:
+        # Save data to a CSV file
+        with open('applications.csv', 'a', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow([name, dob, mobile, email, english_level, python_level, experience])
+
+        # Determine if accepted or declined
+        if (english_level == ACCEPTANCE_CRITERIA["english_level"] and 
+            python_level == ACCEPTANCE_CRITERIA["python_level"] and 
+            experience == ACCEPTANCE_CRITERIA["experience"]):
+            send_email(email, name, accepted=True)
+            st.success(f"Thank you, {name}! Your application has been accepted. An email has been sent.")
+        else:
+            send_email(email, name, accepted=False)
+            st.warning(f"Thank you, {name}. Unfortunately, your application has been declined. An email has been sent.")
