@@ -4,8 +4,8 @@ from email.mime.text import MIMEText
 import csv
 
 # Email configuration
-EMAIL_ADDRESS = 'your-email@example.com'  # Replace with your email
-EMAIL_PASSWORD = 'your-email-password'  # Replace with your email password
+EMAIL_ADDRESS = 'meermiro299@gmail.com'
+EMAIL_PASSWORD = 'Meer2025meer'  # Change this as soon as possible!
 
 # Define acceptance criteria
 ACCEPTANCE_CRITERIA = {
@@ -14,6 +14,7 @@ ACCEPTANCE_CRITERIA = {
     "experience": "5+ years"
 }
 
+# Function to send email
 # Function to send email
 def send_email(to_email, applicant_name, accepted):
     subject = "Application Status"
@@ -28,9 +29,10 @@ def send_email(to_email, applicant_name, accepted):
     msg['To'] = to_email
 
     # Send email
-    with smtplib.SMTP_SSL('smtp.example.com', 465) as smtp:  # Replace with your SMTP server
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:  # Replace with your SMTP server
         smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
         smtp.send_message(msg)
+
 
 # Streamlit app
 st.title("Personal Information Form")
