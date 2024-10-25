@@ -6,7 +6,7 @@ from datetime import datetime
 
 # Email configuration
 EMAIL_ADDRESS = 'meermiro299@gmail.com'
-EMAIL_PASSWORD = 'tlkt ejed oftf imze'
+EMAIL_PASSWORD = 'tlkt ejed oftf imze' 
 
 # Define course name
 COURSE_NAME = "Course"
@@ -62,15 +62,12 @@ with st.form(key='application_form'):
         accepted = False  # Initialize accepted status
 
         # Check acceptance criteria
-        if (english_level == "3" and 
-            python_level == "3" and 
+        if (english_level == 3 and 
+            python_level == 3 and 
             experience == "5+ years"):
             accepted = True
-        elif ((english_level in ["1", "2"] and python_level in ["1", "2"]) and 
-              (experience in ["less than a year", "2-4 years"])):
-            accepted = False
-        else:
-            accepted = False  # Default to decline for all other cases
+        elif (english_level in [1, 2] or python_level in [1, 2]) and experience in ["less than a year", "2-4 years"]:
+            accepted = False  # This condition leads to decline
 
         # Send email based on acceptance status
         send_email(email, name, accepted)
