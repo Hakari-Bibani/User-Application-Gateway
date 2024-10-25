@@ -5,7 +5,7 @@ import csv
 
 # Email configuration
 EMAIL_ADDRESS = 'meermiro299@gmail.com'
-EMAIL_PASSWORD = 'Meer2025meer'  # Change this as soon as possible!
+EMAIL_PASSWORD = 'tlkt ejed oftf imze'  # Change this as soon as possible!
 
 # Define acceptance criteria
 ACCEPTANCE_CRITERIA = {
