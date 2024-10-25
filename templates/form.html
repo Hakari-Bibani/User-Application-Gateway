@@ -1,0 +1,48 @@
+<!-- form.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Information Form</title>
+</head>
+<body>
+    <h2>Personal Information Form</h2>
+    <form action="/submit" method="post">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="dob">Date of Birth:</label><br>
+        <input type="date" id="dob" name="dob" required><br><br>
+
+        <label for="mobile">Mobile Number:</label><br>
+        <input type="text" id="mobile" name="mobile" required><br><br>
+
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label>Level of English Language:</label><br>
+        <select name="english_level" required>
+            <option value="1">Beginner</option>
+            <option value="2">Intermediate</option>
+            <option value="3">Advanced</option>
+        </select><br><br>
+
+        <label>Level of Python:</label><br>
+        <select name="python_level" required>
+            <option value="1">Beginner</option>
+            <option value="2">Intermediate</option>
+            <option value="3">Advanced</option>
+        </select><br><br>
+
+        <label>Experience:</label><br>
+        <select name="experience" required>
+            <option value="less than a year">Less than a year</option>
+            <option value="2-4 years">2-4 years</option>
+            <option value="5+ years">5+ years</option>
+        </select><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
