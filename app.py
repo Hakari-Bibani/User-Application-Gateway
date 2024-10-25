@@ -3,7 +3,7 @@ import streamlit as st
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-import io
+import base64
 
 # Initialize an empty DataFrame to store applications
 applications_df = pd.DataFrame(columns=["Name", "DOB", "Mobile", "Email", "English_Level", "Python_Level", "Experience"])
@@ -47,7 +47,7 @@ with st.form("application_form"):
     submitted = st.form_submit_button("Submit")
 
     if submitted:
-        # Determine acceptance
+        # Determine acceptance criteria
         accepted = (english_level == 3 and python_level == 3 and experience == "5+ years")
         
         # Send the email
@@ -63,10 +63,10 @@ with st.form("application_form"):
             "Python_Level": python_level,
             "Experience": experience,
         }
-        applications_df = applications_df.append(new_application, ignore_index=True)
-
-# Create a download button for the CSV file
-csv = applications_df.to_csv(index=False)
-b64 = base64.b64encode(csv.encode()).decode()  # Convert to base64
-linko = f'<a href="data:file/csv;base64,{b64}" download="applications.csv">Download applications.csv</a>'
-st.markdown(linko, unsafe_allow_html=True)
+        applications_df.loc[len(applications_df)] = new_application  # Append new row
+        
+        # Create a download button for the CSV file
+        csv = applications_df.to_csv(index=False)
+        b64 = base64.b64encode(csv.encode()).decode()  # Convert to base64
+        linko = f'<a href="data:file/csv;base64,{b64}" download="applications.csv">Download applications.csv</a>'
+        st.markdown(linko, unsafe_allow_html=True)
