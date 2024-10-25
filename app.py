@@ -6,16 +6,9 @@ from datetime import datetime
 
 # Email configuration
 EMAIL_ADDRESS = 'meermiro299@gmail.com'
-EMAIL_PASSWORD = 'tlkt ejed oftf imze'  # Replace with your email password
+EMAIL_PASSWORD = 'tlkt ejed oftf imze'
 
-# Define acceptance criteria
-ACCEPTANCE_CRITERIA = {
-    "english_level": "3",
-    "python_level": "3",
-    "experience": "5+ years"
-}
-
-# Course name
+# Define course name
 COURSE_NAME = "Course"
 
 # Function to send email
@@ -32,7 +25,7 @@ def send_email(to_email, applicant_name, accepted):
     msg['To'] = to_email
 
     # Send email
-    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:  
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
         smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
         smtp.send_message(msg)
 
@@ -66,15 +59,21 @@ with st.form(key='application_form'):
             writer.writerow([name, dob, mobile, email, english_level, python_level, experience])
 
         # Determine if accepted or declined
+        accepted = False  # Initialize accepted status
+
+        # Check acceptance criteria
         if (english_level == "3" and 
             python_level == "3" and 
             experience == "5+ years"):
-            send_email(email, name, accepted=True)
+            accepted = True
         elif ((english_level in ["1", "2"] and python_level in ["1", "2"]) and 
-              (experience == "less than a year" or experience == "2-4 years")):
-            send_email(email, name, accepted=False)
+              (experience in ["less than a year", "2-4 years"])):
+            accepted = False
         else:
-            send_email(email, name, accepted=False)
+            accepted = False  # Default to decline for all other cases
+
+        # Send email based on acceptance status
+        send_email(email, name, accepted)
 
         # Update session state to indicate form submission
         st.session_state.form_submitted = True
