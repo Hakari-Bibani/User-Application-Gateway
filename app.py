@@ -8,7 +8,7 @@ from datetime import datetime
 # Email configuration
 EMAIL_ADDRESS = 'meermiro299@gmail.com'
 EMAIL_PASSWORD = 'tlkt ejed oftf imze' 
-GITHUB_TOKEN = 'your-github-token'  # Replace with your GitHub token
+GITHUB_TOKEN = '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'
 GITHUB_REPO = 'Hakari-Bibani/User-Application-Gateway'  # Your repository
 CSV_FILE = 'applications.csv'  # The name of the CSV file
 
